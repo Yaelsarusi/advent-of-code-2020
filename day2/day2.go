@@ -3,23 +3,43 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 func main() {
-	helper(part1condition)
-	helper(part2condition)
+	
+	start := time.Now()
+	part1()
+	fmt.Println(time.Since(start))
+
+	// helper(part2condition, day2PuzzleInput)
 }
 
 type condition func(ppai passwordPolicyAndInput) bool
 
-func helper(checkCondition condition) {
+func part1() {
+	c := make(chan int)
+	slice1 := day2PuzzleInput[0: 250]
+	slice2 := day2PuzzleInput[250: 500]
+	slice3 := day2PuzzleInput[500: 750]
+	slice4 := day2PuzzleInput[750: 1000]
+	go helper(part1condition, slice1, c)
+	go helper(part1condition, slice2, c)
+	go helper(part1condition, slice3, c)
+	go helper(part1condition, slice4, c)
+	slice1Val, slice2Val, slice3Val, slice4Val := <-c, <-c, <-c, <-c
+	fmt.Println(slice1Val + slice2Val + slice3Val + slice4Val)
+
+}
+
+func helper(checkCondition condition, input []passwordPolicyAndInput, c chan int) {
 	counter := 0
-	for _, s := range day2PuzzleInput {
+	for _, s := range input {
 		if (checkCondition(s)) {
 			counter ++
 		}
 	}
-	fmt.Println(counter)
+	c <- counter
 }
 
 func part1condition(ppai passwordPolicyAndInput) bool {
@@ -38,7 +58,7 @@ type passwordPolicyAndInput struct {
 	str  string
 }
 
-var day2PuzzleInput = [1000]passwordPolicyAndInput{
+var day2PuzzleInput = []passwordPolicyAndInput{
 	passwordPolicyAndInput{6, 10, "p", "ctpppjmdpppppp"},
 passwordPolicyAndInput{17, 19, "l", "llllllllllllllllllll"},
 passwordPolicyAndInput{14, 19, "z", "zrzzzzzztzzzzwzzzzk"},
