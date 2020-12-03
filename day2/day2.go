@@ -6,29 +6,29 @@ import (
 )
 
 func main() {
-	part1()
-	part2()
+	helper(part1condition)
+	helper(part2condition)
 }
 
-func part2() {
+type condition func(ppai passwordPolicyAndInput) bool
+
+func helper(checkCondition condition) {
 	counter := 0
 	for _, s := range day2PuzzleInput {
-		if ((string(s.str[s.min - 1]) == s.char) != (string(s.str[s.max - 1]) == s.char)) {
+		if (checkCondition(s)) {
 			counter ++
 		}
 	}
 	fmt.Println(counter)
 }
 
-func part1() {
-	counter := 0
-	for _, s := range day2PuzzleInput {
-		count := strings.Count(s.str, s.char)
-		if count >= s.min && count <= s.max {
-			counter++
-		}
-	}
-	fmt.Println(counter)
+func part1condition(ppai passwordPolicyAndInput) bool {
+	count := strings.Count(ppai.str, ppai.char)
+	return (count >= ppai.min && count <= ppai.max)
+}
+
+func part2condition(ppai passwordPolicyAndInput) bool {
+	return (string(ppai.str[ppai.min - 1]) == ppai.char) != (string(ppai.str[ppai.max - 1]) == ppai.char)
 }
 
 type passwordPolicyAndInput struct {
