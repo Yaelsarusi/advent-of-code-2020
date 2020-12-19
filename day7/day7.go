@@ -74,7 +74,7 @@ func parseBags(instructions string) map[string]*bag{
 
 func part1(bagMap map[string]*bag) {
 	canContainGoldBag := 0
-
+	
 	for key := range bagMap {
 		if (checkIfBagCanContainGoldBag(key, bagMap)) {
 			canContainGoldBag ++
